@@ -1,8 +1,11 @@
 # Shopping Cart Problem - Easy
 
+> From https://github.com/girlscript-blr/code-with-girlscript-bangalore
+
 > Date : 1st July 2020
 
 ## Prerequisites
+
 - Basic input output of strings and numbers.
 - One of `Class`/`Object`/`Dictionary`/`Map` to store shopping items. (Depends on the language you are using)
 - Creating and displaying arrays.
@@ -60,9 +63,9 @@ Output will be a bill based on the given input. The bill can be in any format bu
 
 ## Requirements for submission
 
-- A document containing a screenshot showing the results must also be pushed along with final submission. A brief description(not more than 4-5 lines/100 words) should be included containing the approach used for solving the problem. 
+- A document containing a screenshot showing the results must also be pushed along with final submission. A brief description(not more than 4-5 lines/100 words) should be included containing the approach used for solving the problem.
 - Last Submission Date : `30th July 2020`
-- If you haven’t filled our [participation form](https://tinyurl.com/codewithgsblr) 📃yet, fill it now. 
+- If you haven’t filled our [participation form](https://tinyurl.com/codewithgsblr) 📃yet, fill it now.
 
 ## How to submit solution?
 
