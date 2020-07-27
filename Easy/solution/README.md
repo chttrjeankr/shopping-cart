@@ -1,22 +1,25 @@
 # Usage Presentation
 
 <!-- Screenshots here -->
+
 ### Site Preview
+
 > ![Peek 2020-07-07 18-13](https://user-images.githubusercontent.com/39518771/86783492-00cbf400-c07e-11ea-8ebe-435c317577ee.gif)
 
 ### Creating an order
+
 > ![Peek 2020-07-07 18-17](https://user-images.githubusercontent.com/39518771/86783636-353fb000-c07e-11ea-85c5-1de96e65955b.gif)
 
 ### Generated bill
-> ![Screenshot from 2020-07-07 18-15-40](https://user-images.githubusercontent.com/39518771/86783480-fc9fd680-c07d-11ea-8e8d-3362e3d4b11a.png)
 
+> ![Screenshot from 2020-07-07 18-15-40](https://user-images.githubusercontent.com/39518771/86783480-fc9fd680-c07d-11ea-8e8d-3362e3d4b11a.png)
 
 # Local testing
 
 1. Make sure you're in the correct directory:
 
 ```
-/code-with-girlscript-bangalore/Easy/1. Shopping Cart Problem/solutions/chttrjeankr_Ankur_Chattopadhyay/
+/shopping-cart/Easy/solution/
 ```
 
 2. Run `pip install -r requirements.txt` to install Flask

@@ -37,7 +37,7 @@
 1. Make sure you're in the correct directory:
 
 ```
-/code-with-girlscript-bangalore/Medium/1. Shopping Cart Problem/solutions/chttrjeankr_Ankur_Chattopadhyay/
+/shopping-cart/Medium/solution/
 ```
 
 2. Run `pip install -r requirements.txt` to install Flask
