@@ -1,4 +1,4 @@
-### Badgr badges for completing the problems in [GirlScript Bangalore's repository](https://github.com/girlscript-blr/code-with-girlscript-bangalore/pull/48)
+### Badgr badges for completing the problems in [GirlScript Bangalore's repository](https://github.com/girlscript-blr/code-with-girlscript-bangalore/)
 
 <a href="https://api.eu.badgr.io/public/assertions/Ih_o7bVtSze9ri1ygahLGQ" target="blank"><img src="badges/THE_NEOPHYTE_2020-07-20.png" alt="The Neophyte" height="250px"></a>
 <a href="https://api.eu.badgr.io/public/assertions/oQg7xwHmStWC7VsdGttcuA" target="blank"><img src="badges/THE_EXPLORER_2020-07-20.png" alt="The Explorer" height="250px"></a>
@@ -6,16 +6,16 @@
 
 <hr>
 
-#### Easy
+#### [Easy](https://github.com/girlscript-blr/code-with-girlscript-bangalore/blob/master/Easy/1.%20Shopping%20Cart%20Problem/README.md)
 
 - Application created to let user shop for a specific item of valid quantity with no discounts and 6% tax.
 
-#### Medium
+#### [Medium](https://github.com/girlscript-blr/code-with-girlscript-bangalore/blob/master/Medium/1.%20Shopping%20Cart%20Problem/README.md)
 
 - Application created to let user shop for multiple items of valid quantity with applicable discounts and 6% tax.
 - User is allowed to opt for home delivery for under 50 km distance from the shop.
 
-#### Hard
+#### [Hard](https://github.com/girlscript-blr/code-with-girlscript-bangalore/blob/master/Hard/1.%20Shopping%20Cart%20Problem/README.md)
 
 - Application created to let user shop for multiple items from multiple categories of valid quantity with applicable discounts and 6% tax
 - User is allowed to opt for home delivery for under 50 km distance from the shop
