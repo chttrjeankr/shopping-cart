@@ -1,8 +1,9 @@
 ### Badgr badges for completing the problems in [GirlScript Bangalore's repository](https://github.com/girlscript-blr/code-with-girlscript-bangalore/)
 
-<a href="https://api.eu.badgr.io/public/assertions/Ih_o7bVtSze9ri1ygahLGQ" target="blank"><img src="badges/THE_NEOPHYTE_2020-07-20.png" alt="The Neophyte" height="250px"></a>
-<a href="https://api.eu.badgr.io/public/assertions/oQg7xwHmStWC7VsdGttcuA" target="blank"><img src="badges/THE_EXPLORER_2020-07-20.png" alt="The Explorer" height="250px"></a>
-<a href="https://api.eu.badgr.io/public/assertions/vIZQuB9HTKKWmat5tahUCw" target="blank"><img src="badges/THE_AFICIONADO_2020-07-31.png" alt="The Aficionado" height="250px"></a>
+<a href="https://api.eu.badgr.io/public/assertions/Ih_o7bVtSze9ri1ygahLGQ" target="blank"><img src="badges/THE_NEOPHYTE_2020-07-20.png" alt="The Neophyte" height="200px"></a>
+<a href="https://api.eu.badgr.io/public/assertions/oQg7xwHmStWC7VsdGttcuA" target="blank"><img src="badges/THE_EXPLORER_2020-07-20.png" alt="The Explorer" height="200px"></a>
+<a href="https://api.eu.badgr.io/public/assertions/vIZQuB9HTKKWmat5tahUCw" target="blank"><img src="badges/THE_AFICIONADO_2020-07-31.png" alt="The Aficionado" height="200px"></a>
+<a href="https://api.eu.badgr.io/public/assertions/j6WsjFRlTxGAk9yCuWzTYg" target="blank"><img src="badges/GEEK_OF_THE_GEEKS_2020-08-01.png" alt="Geek of the Geeks" height="200px"></a>
 
 <hr>
 
