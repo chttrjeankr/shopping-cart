@@ -44,7 +44,7 @@
   <div class="container">
     <ul style="list-style-type: none;">
       <li>Date: {{ order.billing_date_time|date:"D, d F, Y, h:i:s A e" }}</li>
-      <li>Order ID: {{ order.pk }}</li>
+      <li>Order ID: {{ order.order_id }}</li>
       <li>
         <!-- prettier-ignore -->
         <strong>Order Status: {{ order.get_order_status_display }}</strong> as
@@ -111,6 +111,53 @@
     </ul>
   </div>
 
+  {% if status_check %}
+  <div class="alert alert-success" role="alert">
+    Payment Status: {{ order.payment_status }}
+  </div>
+  {% else %}
+  <div class="container">
+    <button id="rzp-button1">
+      Make Payment
+    </button>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    {% csrf_token %}
+    <script>
+      var options = {
+        key: "{{ razorpay_keyid }}", // Enter the Key ID generated from the Dashboard
+        amount: "{{ order.amount_payable }}", // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+        currency: "INR",
+        name: "GS-Bangalore Online Shop",
+        description: "Test Transaction",
+        // image: "https://example.com/your_logo",
+        order_id: "{{ order.razorpay_order_id}}",
+        callback_url: "{% url 'rp_payment' order.order_id %}",
+        // handler: function (response) {
+        //   alert(response.razorpay_payment_id);
+        //   alert(response.razorpay_order_id);
+        //   alert(response.razorpay_signature);
+        // },
+        prefill: {
+          name: "Ankur Chattopadhyay",
+          email: "ankur@designride.co",
+          contact: "8757772827",
+        },
+        notes: {
+          eventname: "Cricket Event",
+        },
+        theme: {
+          color: "#F37254",
+        },
+      };
+      var rzp1 = new Razorpay(options);
+      // const csrftoken = Cookies.get("csrftoken");
+      document.getElementById("rzp-button1").onclick = function (e) {
+        rzp1.open();
+        e.preventDefault();
+      };
+    </script>
+  </div>
+  {% endif %}
   <div class="container">
     <button
       type="submit"

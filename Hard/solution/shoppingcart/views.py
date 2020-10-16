@@ -2,9 +2,10 @@ from datetime import datetime
 
 from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist
+from django.http import JsonResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse
-
+from django.views.decorators.csrf import csrf_exempt
 from shoppingcart.forms import CategoryForm, ItemForm, OrderForm
 from shoppingcart.models import Category, Item, Order
 from shoppingcart.utilities import shop_details
@@ -277,6 +278,21 @@ def edit_category(request, category_id):
 # ----------Order "CR" (Customer)----------
 
 
+@csrf_exempt
+def razorpay_payment(request, order_id):
+    params_dict = {
+        "razorpay_order_id": request.POST["razorpay_order_id"],
+        "razorpay_payment_id": request.POST["razorpay_payment_id"],
+        "razorpay_signature": request.POST["razorpay_signature"],
+    }
+    order = Order.objects.get(order_id=order_id)
+    print(order.verify_razorpay_signature(params_dict))
+    if order.verify_razorpay_signature(params_dict):
+        return JsonResponse({True: "Success"})
+    else:
+        return JsonResponse({False: "Failure"})
+
+
 def create_order(request):
     if request.method == "POST":
         form = OrderForm(request.POST)
@@ -314,7 +330,7 @@ def get_order_status(request):
         phone_number = request.POST.get("phone_number")
         try:
             queried_order = Order.objects.get(
-                pk=order_id, customer_mobile_no=phone_number
+                order_id=order_id, customer_mobile_no=phone_number
             )
             return render(
                 request,
