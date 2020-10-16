@@ -180,6 +180,40 @@ class Order(models.Model):
         client = razorpay.Client(auth=(RAZORPAY_KEYID, RAZORPAY_SECRET))
         return client
 
+    def get_razorpay_order_id(self):
+        client = self.get_razorpay_client()
+        order_amount = self.amount_payable * 100
+        order_currency = "INR"
+        order_receipt = self.order_id
+        notes = {"Shipping Address": self.shipping_address}
+
+        resp = client.order.create(
+            data={
+                "amount": order_amount,
+                "currency": order_currency,
+                "receipt": order_receipt,
+                "notes": notes,
+            }
+        )
+        return resp["id"]
+
+    def verify_razorpay_signature(self, params_dict):
+        client = self.get_razorpay_client()
+        # self.razorpay_order_id = params_dict["razorpay_order_id"]
+        self.razorpay_payment_id = params_dict["razorpay_payment_id"]
+        self.razorpay_signature = params_dict["razorpay_signature"]
+        self.save()
+        try:
+            client.utility.verify_payment_signature(params_dict)
+            self.payment_status = "SUCC"
+            return True
+        except razorpay.errors.SignatureVerificationError:
+            self.payment_status = "FAIL"
+            self.payment_error_code = "SignatureVerificationError"
+            return False
+        finally:
+            self.save()
+
     def save(self, cart=None, *args, **kwargs):
         if not self.order_id:
             self.order_id = f"{hash(self.billing_date_time)}"
