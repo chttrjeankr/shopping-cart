@@ -167,6 +167,19 @@ class Order(models.Model):
         if self.total_shipping is None:
             raise ValidationError("Undeliverable Shipping Address")
 
+    def get_razorpay_client(self):
+        import razorpay
+        import os
+        from dotenv import load_dotenv
+
+        load_dotenv()
+
+        RAZORPAY_KEYID = os.getenv("razorpay_keyid")
+        RAZORPAY_SECRET = os.getenv("razorpay_secret")
+
+        client = razorpay.Client(auth=(RAZORPAY_KEYID, RAZORPAY_SECRET))
+        return client
+
     def save(self, cart=None, *args, **kwargs):
         if not self.order_id:
             self.order_id = f"{hash(self.billing_date_time)}"
