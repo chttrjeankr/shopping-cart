@@ -140,7 +140,7 @@ class Order(models.Model):
         return round((self.total_item_price + self.total_tax + self.total_shipping), 2)
 
     def get_items_from_json_cart(self):
-        with open(order_directory + f"order_{self.pk}.json") as f:
+        with open(order_directory + f"cart_{self.order_id}.json") as f:
             cart_list = json.load(f)
 
         item_list = []
@@ -153,26 +153,30 @@ class Order(models.Model):
         return item_list
 
     def save_cart(self, cart):
-        cart_list = [{"order_id": self.pk}]
+        cart_list = [{"order_id": self.order_id}]
         for i, (item, quantity) in enumerate(cart.items()):
             ser_item = Item.objects.filter(pk=item.pk)
             store_cart = json.loads(serialize("json", ser_item))
             store_cart[0]["quantity"] = quantity
             cart_list.extend(store_cart)
 
-        with open(order_directory + f"order_{self.pk}.json", "w") as f:
+        with open(order_directory + f"cart_{self.order_id}.json", "w") as f:
             json.dump(cart_list, f)
 
     def clean(self):
         if self.total_shipping is None:
             raise ValidationError("Undeliverable Shipping Address")
 
-    def save(self, cart, *args, **kwargs):
+    def save(self, cart=None, *args, **kwargs):
+        if not self.order_id:
+            self.order_id = f"{hash(self.billing_date_time)}"
+            print(self.order_id)
+            self.save_cart(cart)
+            self.razorpay_order_id = self.get_razorpay_order_id()
         super().save(*args, **kwargs)
-        self.save_cart(cart)
 
     def __str__(self):
-        return f"Order {self.pk}"
+        return f"Order {self.order_id}"
 
     class Meta:
         verbose_name = "Order"
