@@ -68,7 +68,21 @@ class Order(models.Model):
         ("COMP", "Completed"),
         ("CANC", "Cancelled"),
     ]
+    PAYMENT_STATUSES = [
+        ("INIT", "Initialized"),
+        ("SUCC", "Successful"),
+        ("CANC", "Cancelled"),
+        ("FAIL", "Failure"),
+    ]
 
+    order_id = models.CharField(max_length=30, editable=False)
+    razorpay_order_id = models.CharField(max_length=20, editable=False)
+    razorpay_payment_id = models.CharField(max_length=18, editable=False)
+    razorpay_signature = models.CharField(max_length=64, editable=False)
+    payment_status = models.CharField(
+        max_length=4, choices=PAYMENT_STATUSES, default="INIT"
+    )
+    payment_error_code = models.TextField(default="NO ERROR")
     billing_date_time = models.DateTimeField(auto_now_add=True)
     order_modified = models.DateTimeField(auto_now=True)
     order_status = models.CharField(
