@@ -288,6 +288,7 @@ def razorpay_payment(request, order_id):
     order = Order.objects.get(order_id=order_id)
     print(order.verify_razorpay_signature(params_dict))
     if order.verify_razorpay_signature(params_dict):
+        cart.clear()
         return JsonResponse({True: "Success"})
     else:
         return JsonResponse({False: "Failure"})
@@ -301,7 +302,6 @@ def create_order(request):
                 order = form.save(commit=False)
                 order.order_status = "TRAN"
                 order.save(cart)
-                cart.clear()
                 return render(
                     request,
                     "display_bill.html",
