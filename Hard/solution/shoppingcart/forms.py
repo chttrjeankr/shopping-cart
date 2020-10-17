@@ -39,6 +39,7 @@ class ItemForm(ModelForm):
             "discount_price",
             "weight_in_gms",
             "available",
+            "available_quantity",
         ]
 
 

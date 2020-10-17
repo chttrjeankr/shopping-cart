@@ -54,6 +54,7 @@ class ItemAdmin(admin.ModelAdmin):
         "discount_price",
         "weight_in_gms",
         "available",
+        "available_quantity",
     )
     list_filter = ("category", "available")
 

@@ -29,6 +29,7 @@ class Item(models.Model):
     discount_price = models.FloatField(null=True, blank=True)
     weight_in_gms = models.FloatField()
     available = models.BooleanField(default=True)
+    available_quantity = models.IntegerField(default=0)
 
     @property
     def actual_price(self):
@@ -82,7 +83,7 @@ class Order(models.Model):
     payment_status = models.CharField(
         max_length=4, choices=PAYMENT_STATUSES, default="INIT"
     )
-    payment_error_code = models.TextField(default="NO ERROR")
+    payment_error_code = models.TextField(default="NoError")
     billing_date_time = models.DateTimeField(auto_now_add=True)
     order_modified = models.DateTimeField(auto_now=True)
     order_status = models.CharField(
