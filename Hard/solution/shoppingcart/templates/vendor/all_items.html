@@ -127,6 +127,7 @@
             </form>
           </th>
           <th>Availability</th>
+          <th>Available Quantity</th>
           <th>Edit Item</th>
         </tr>
       </thead>
@@ -152,6 +153,7 @@
           {% else %}
           <td style="text-align: center;">Unavailable</td>
           {% endif %}
+          <td>{{ item.available_quantity }}</td>
           <td>
             <form action="/edit_item/{{ item.pk }}">
               <button type="submit" class="btn btn-dark btn-sm">

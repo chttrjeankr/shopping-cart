@@ -87,6 +87,20 @@
             required
           />
         </div>
+        <label for="available_quantity" class="col-sm-2 col-form-label">
+          Quantity in stock:
+        </label>
+        <div class="col-sm-10">
+          <input
+            type="number"
+            class="form-control"
+            id="available_quantity"
+            name="available_quantity"
+            placeholder="Enter stock quantity"
+            value="{{ form.available_quantity.value }}"
+            required
+          />
+        </div>
         <label for="available" class="col-sm-2 col-form-label">
           Availability:
         </label>

@@ -32,6 +32,7 @@
           <th>Discounted Price</th>
           <th>Amount Saved</th>
           <th>Weight in grams</th>
+          <th>Quantities Left</th>
         </tr>
       </thead>
       <tbody>
@@ -54,7 +55,8 @@
           <td style="text-align: center;">N/A</td>
           {% endif %}
           <td style="text-align: right;">{{ item.weight_in_gms }} gms</td>
-          {% if item.available %}
+          <td style="text-align: right;">{{ item.available_quantity }}</td>
+          {% if item.available_quantity != 0 %}
           <td>
             <form class="form-inline" action="" method="post">
               {% csrf_token %}
@@ -64,7 +66,7 @@
                   type="number"
                   class="form-control"
                   name="quantity"
-                  value="{{ cart|get_quantity:item }}"
+                  value="{{ cart|get_quantity:item.pk }}"
                   min="0"
                 />
                 <button
@@ -73,7 +75,7 @@
                   class="btn btn-dark btn-sm"
                 >
                   <!-- prettier-ignore -->
-                  {% if cart|get_quantity:item != 0 %}
+                  {% if cart|get_quantity:item.pk != 0 %}
                   Update Quantity
                   {% else %}
                   Add to Cart
