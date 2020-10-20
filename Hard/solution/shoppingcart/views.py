@@ -330,7 +330,6 @@ def razorpay_payment(request, order_id):
         "razorpay_signature": request.POST["razorpay_signature"],
     }
     order = Order.objects.get(order_id=order_id)
-    print(order.verify_razorpay_signature(params_dict))
     if order.verify_razorpay_signature(params_dict):
         clear_session_cart(request)
         return JsonResponse({True: "Success"})
