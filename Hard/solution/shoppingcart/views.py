@@ -379,7 +379,7 @@ def get_order_status(request):
             )
             return render(
                 request,
-                "display_bill.html",
+                "display_status.html",
                 context={"order": queried_order, **shop_details, "status_check": True},
             )
         except ObjectDoesNotExist:
