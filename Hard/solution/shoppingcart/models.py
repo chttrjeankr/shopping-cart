@@ -114,10 +114,6 @@ class Order(models.Model):
     distance_from_shop = models.IntegerField(blank=True, null=True, default=0)
     shipping_address = models.TextField(blank=True, null=True)
 
-    def get_billed_items(self):
-        item_list = self.get_items_from_json_cart()
-        return item_list
-
     @property
     def total_tax(self):
         tax_rate = 0.06
@@ -141,46 +137,38 @@ class Order(models.Model):
     @property
     def total_item_price(self):
         price = 0
-        item_list = self.get_billed_items()
-        for item, quantity in item_list:
-            price += item.actual_price * quantity
+        for item in self.items_in_order:
+            price += item.purchased_price * item.purchased_quantity
         return round(price, 2)
 
     @property
     def total_savings(self):
         saved = 0
-        item_list = self.get_billed_items()
-        for item, quantity in item_list:
-            saved += item.savings * quantity
+        for item in self.items_in_order:
+            saved += item.savings * item.purchased_quantity
         return round(saved, 2)
 
     @property
     def amount_payable(self):
         return round((self.total_item_price + self.total_tax + self.total_shipping), 2)
 
-    def get_items_from_json_cart(self):
-        with open(order_directory + f"cart_{self.order_id}.json") as f:
-            cart_list = json.load(f)
-
-        item_list = []
-        for item in cart_list[1:]:
-            quantity = item.pop("quantity")
-            item_deserialized = list(deserialize("json", json.dumps([item])))[0]
-            item_obj = item_deserialized.object
-            item_list.append((item_obj, quantity))
-
-        return item_list
+    @property
+    def items_in_order(self):
+        items_in_order = PurchasedItem.objects.filter(order=self)
+        return items_in_order
 
     def save_cart(self, cart):
-        cart_list = [{"order_id": self.order_id}]
-        for i, (item, quantity) in enumerate(cart.items()):
-            ser_item = Item.objects.filter(pk=item.pk)
-            store_cart = json.loads(serialize("json", ser_item))
-            store_cart[0]["quantity"] = quantity
-            cart_list.extend(store_cart)
-
-        with open(order_directory + f"cart_{self.order_id}.json", "w") as f:
-            json.dump(cart_list, f)
+        for item, quantity in cart.items():
+            if item.available_quantity < quantity:
+                raise NotEnoughQuantitiesAvailable
+            p_item = PurchasedItem(
+                item=item,
+                order=self,
+                purchased_price=item.actual_price,
+                savings=item.savings,
+                purchased_quantity=quantity,
+            )
+            p_item.save()
 
     def clean(self):
         if self.total_shipping is None:
