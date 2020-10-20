@@ -11,6 +11,7 @@ urlpatterns = [
         name="display_shopping_list",
     ),
     path("order/", views.create_order, name="create_order"),
+    path("pay/<str:order_id>/", views.payment_page, name="payment_page"),
     path("create_item/", views.create_item, name="create_item"),
     path("edit_category/<int:category_id>/", views.edit_category, name="edit_category"),
     path(

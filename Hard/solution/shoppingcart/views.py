@@ -337,6 +337,15 @@ def razorpay_payment(request, order_id):
         return JsonResponse({False: "Failure", "ErrorCode": order.payment_error_code})
 
 
+def payment_page(request, order_id):
+    order = Order.objects.get(order_id=order_id)
+    return render(
+        request,
+        "display_bill.html",
+        context={"order": order, **shop_details},
+    )
+
+
 def create_order(request):
     if request.method == "POST":
         form = OrderForm(request.POST)
@@ -348,10 +357,8 @@ def create_order(request):
                 if error_while_saving:
                     messages.error(request, error_while_saving)
                     return redirect(reverse("create_order"))
-                return render(
-                    request,
-                    "display_bill.html",
-                    context={"order": order, **shop_details},
+                return redirect(
+                    reverse("payment_page", kwargs={"order_id": order.order_id})
                 )
             else:
                 messages.error(request, "Form Validation Error")
