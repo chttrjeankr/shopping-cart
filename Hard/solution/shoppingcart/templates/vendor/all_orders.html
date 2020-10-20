@@ -50,11 +50,11 @@
           <th>
             Order ID
             <form action="">
-              <input type="hidden" name="order_by" value="pk" />
+              <input type="hidden" name="order_by" value="order_id" />
               <button type="submit">&#8657;</button>
             </form>
             <form action="">
-              <input type="hidden" name="order_by" value="-pk" />
+              <input type="hidden" name="order_by" value="-order_id" />
               <button type="submit">&#8659;</button>
             </form>
           </th>
@@ -108,7 +108,11 @@
                 name="phone_number"
                 value="{{ order.customer_mobile_no }}"
               />
-              <input type="submit" name="order_id" value="{{ order.pk }}" />
+              <input
+                type="submit"
+                name="order_id"
+                value="{{ order.order_id }}"
+              />
             </form>
           </td>
           <td>{{ order.billing_date_time|date:"d/m/y H:i e" }}</td>
@@ -121,7 +125,11 @@
           <td>
             <form class="form-inline" action="" method="post">
               {% csrf_token %}
-              <input type="hidden" name="order_id" value="{{ order.pk }}" />
+              <input
+                type="hidden"
+                name="order_id"
+                value="{{ order.order_id }}"
+              />
               <select class="form-control" name="new_status">
                 <option value="">--Order Status--</option>
                 {% for status_val, status_name in statuses %}
@@ -129,7 +137,7 @@
                 {% endfor %}
               </select>
               <button
-                id="{{ order.pk }}"
+                id="{{ order.order_id }}"
                 type="submit"
                 class="btn btn-dark btn-sm"
               >
