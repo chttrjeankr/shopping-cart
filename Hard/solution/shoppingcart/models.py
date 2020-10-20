@@ -51,6 +51,24 @@ class Item(models.Model):
         unique_together = [["name", "category"]]
 
 
+class PurchasedItem(models.Model):
+    """docstring for PurchasedItem."""
+
+    item = models.ForeignKey("Item", on_delete=models.PROTECT)
+    order = models.ForeignKey("Order", on_delete=models.PROTECT)
+    purchased_price = models.FloatField()
+    savings = models.FloatField()
+    purchased_quantity = models.IntegerField()
+
+    def __str__(self):
+        return f"Purchased Item {self.order.order_id}: {self.item.name} [{self.purchased_quantity}]"
+
+    class Meta:
+        verbose_name = "Purchased Item"
+        verbose_name_plural = "Purchased Items"
+        unique_together = [["item", "order"]]
+
+
 class Order(models.Model):
     """docstring for Order."""
 
