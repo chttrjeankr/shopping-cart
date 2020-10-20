@@ -1,3 +1,4 @@
+from collections import defaultdict
 from datetime import datetime
 
 from django.contrib import messages
@@ -10,16 +11,49 @@ from shoppingcart.forms import CategoryForm, ItemForm, OrderForm
 from shoppingcart.models import Category, Item, Order
 from shoppingcart.utilities import shop_details
 
-cart = dict()
-
 
 def index(request):
     return render(request, "index.html")
 
 
+def get_session_cart(request):
+    try:
+        return request.session["cart"]
+    except KeyError:
+        request.session["cart"] = defaultdict(int)
+        return request.session["cart"]
+
+
+def all_items_in_session_cart(request):
+    item_list = {}
+    print(get_session_cart(request))
+    for item_id, quantity in get_session_cart(request).items():
+        item_list[Item.objects.get(pk=item_id)] = quantity
+    return item_list
+
+
+def check_in_session_cart(request, item_id):
+    return item_id in get_session_cart(request)
+
+
+def clear_session_cart(request):
+    request.session["cart"] = defaultdict(int)
+
+
+def delete_from_session_cart(request, item_id):
+    del request.session["cart"][item_id]
+    request.session.modified = True
+
+
+def add_to_session_cart(request, item_id, quantity):
+    get_session_cart(request)
+    request.session["cart"][item_id] = quantity
+    request.session.modified = True
+
+
 def clear_cart(request):
-    if cart:
-        cart.clear()
+    if get_session_cart(request):
+        clear_session_cart(request)
         messages.info(request, "Cart cleared! Add more items")
         return redirect(reverse("categories"))
     else:
@@ -38,17 +72,27 @@ def display_shopping_list(request, category):
         quantity = int(request.POST.get("quantity"))
         new_item = Item.objects.get(pk=item_id)
         if quantity == 0:
-            if cart.get(new_item):
-                del cart[new_item]
+            if check_in_session_cart(request, item_id):
+                delete_from_session_cart(request, item_id)
+                messages.success(request, f"Item {new_item.name} removed")
         else:
-            cart[new_item] = quantity
-        messages.success(request, f"Item {new_item.name} updated")
+            if new_item.available_quantity < quantity:
+                messages.error(
+                    request, f"{quantity} items of {new_item.name} not available"
+                )
+            else:
+                add_to_session_cart(request, item_id, quantity)
+                print(get_session_cart(request))
+                messages.success(request, f"Item {new_item.name} updated")
         return redirect("display_shopping_list", category=category)
     shopping_list = Item.objects.filter(category=category)
     return render(
         request,
         "shopping_list.html",
-        context={"shopping_list": shopping_list, "cart": cart},
+        context={
+            "shopping_list": shopping_list,
+            "cart": get_session_cart(request),
+        },
     )
 
 
@@ -288,7 +332,7 @@ def razorpay_payment(request, order_id):
     order = Order.objects.get(order_id=order_id)
     print(order.verify_razorpay_signature(params_dict))
     if order.verify_razorpay_signature(params_dict):
-        cart.clear()
+        clear_session_cart(request)
         return JsonResponse({True: "Success"})
     else:
         return JsonResponse({False: "Failure"})
@@ -297,11 +341,10 @@ def razorpay_payment(request, order_id):
 def create_order(request):
     if request.method == "POST":
         form = OrderForm(request.POST)
-        if cart:
+        if get_session_cart(request):
             if form.is_valid():
                 order = form.save(commit=False)
                 order.order_status = "TRAN"
-                order.save(cart)
                 return render(
                     request,
                     "display_bill.html",
@@ -318,7 +361,9 @@ def create_order(request):
         form = OrderForm()
 
     return render(
-        request, "create_order.html", context={"cart": dict(cart), "form": form},
+        request,
+        "create_order.html",
+        context={"cart": all_items_in_session_cart(request), "form": form},
     )
 
 
