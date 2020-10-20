@@ -1,7 +1,6 @@
 from datetime import datetime
 
 from django.contrib import admin
-
 from shoppingcart.models import Category, Item, Order
 
 
