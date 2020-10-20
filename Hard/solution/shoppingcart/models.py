@@ -94,6 +94,7 @@ class Order(models.Model):
         ("FAIL", "Failure"),
     ]
 
+    order_uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     order_id = models.CharField(max_length=30, editable=False)
     razorpay_order_id = models.CharField(max_length=20, editable=False)
     razorpay_payment_id = models.CharField(max_length=18, editable=False)
