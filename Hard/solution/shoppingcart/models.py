@@ -205,22 +205,77 @@ class Order(models.Model):
         )
         return resp["id"]
 
-    def verify_razorpay_signature(self, params_dict):
+    def capture_razorpay_payment(self):
+        from razorpay.errors import BadRequestError
+
         client = self.get_razorpay_client()
-        # self.razorpay_order_id = params_dict["razorpay_order_id"]
-        self.razorpay_payment_id = params_dict["razorpay_payment_id"]
-        self.razorpay_signature = params_dict["razorpay_signature"]
-        self.save()
+        payment_id = self.razorpay_payment_id
+        payment_amount = self.amount_payable * 100
+        payment_currency = "INR"
+
         try:
-            client.utility.verify_payment_signature(params_dict)
-            self.payment_status = "SUCC"
+            resp = client.payment.capture(
+                payment_id,
+                payment_amount,
+                {"currency": payment_currency},
+            )
             return True
-        except razorpay.errors.SignatureVerificationError:
+        except BadRequestError:
             self.payment_status = "FAIL"
-            self.payment_error_code = "SignatureVerificationError"
+            self.payment_error_code = "PaymentCaptureFailure"
+            return False
+        except Exception as e:
+            self.payment_status = "FAIL"
+            self.payment_error_code = f"Error:{e}"
             return False
         finally:
             self.save()
+
+    def verify_razorpay_signature(self, params_dict):
+        from razorpay.errors import SignatureVerificationError
+
+        client = self.get_razorpay_client()
+        self.razorpay_payment_id = params_dict["razorpay_payment_id"]
+        self.razorpay_signature = params_dict["razorpay_signature"]
+        self.save()
+
+        all_purchased_items = (
+            PurchasedItem.objects.filter(order=self)
+            .select_related("item")
+            .select_for_update()
+        )
+        # write-lock database for quantity update (atomic transaction)
+
+        # https://docs.djangoproject.com/en/dev/ref/models/querysets/#select-for-update
+        with transaction.atomic():
+            try:
+                # verify payment
+                client.utility.verify_payment_signature(params_dict)
+
+                # check for availablity
+                for pur_item in all_purchased_items:
+                    if pur_item.item.available_quantity < pur_item.purchased_quantity:
+                        raise NotEnoughQuantitiesAvailable
+
+                # capture payment
+                if self.capture_razorpay_payment():
+                    # when verified, deduct from available quantity and open lock
+                    for pur_item in all_purchased_items:
+                        pur_item.item.available_quantity -= pur_item.purchased_quantity
+                        pur_item.item.save()
+                    self.payment_status = "SUCC"
+                    return True
+
+            except SignatureVerificationError:
+                self.payment_status = "FAIL"
+                self.payment_error_code = "SignatureVerificationError"
+                return False
+            except NotEnoughQuantitiesAvailable:
+                self.payment_status = "FAIL"
+                self.payment_error_code = "NotEnoughQuantitiesAvailable"
+                return False
+            finally:
+                self.save()
 
     def save(self, cart=None, *args, **kwargs):
         try:
