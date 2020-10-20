@@ -223,12 +223,17 @@ class Order(models.Model):
             self.save()
 
     def save(self, cart=None, *args, **kwargs):
-        if not self.order_id:
-            self.order_id = f"{hash(self.billing_date_time)}"
-            print(self.order_id)
-            self.save_cart(cart)
-            self.razorpay_order_id = self.get_razorpay_order_id()
-        super().save(*args, **kwargs)
+        try:
+            if not self.order_id:
+                self.order_id = f"{hash(self.order_uuid)}"
+                # generate order existence to refer as FK in other model saves
+                self.save()
+                self.save_cart(cart)
+                self.razorpay_order_id = self.get_razorpay_order_id()
+            super().save(*args, **kwargs)
+        except NotEnoughQuantitiesAvailable:
+            # if failed in order creation, clean garbage database entry
+            self.delete()
 
     def __str__(self):
         return f"Order {self.order_id}"
