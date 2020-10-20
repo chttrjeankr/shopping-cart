@@ -335,7 +335,7 @@ def razorpay_payment(request, order_id):
         clear_session_cart(request)
         return JsonResponse({True: "Success"})
     else:
-        return JsonResponse({False: "Failure"})
+        return JsonResponse({False: "Failure", "ErrorCode": order.payment_error_code})
 
 
 def create_order(request):
@@ -345,6 +345,10 @@ def create_order(request):
             if form.is_valid():
                 order = form.save(commit=False)
                 order.order_status = "TRAN"
+                error_while_saving = order.save(cart=all_items_in_session_cart(request))
+                if error_while_saving:
+                    messages.error(request, error_while_saving)
+                    return redirect(reverse("create_order"))
                 return render(
                     request,
                     "display_bill.html",
