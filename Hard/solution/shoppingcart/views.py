@@ -81,7 +81,11 @@ def clear_cart(request):
 
 def display_categories(request):
     categories = Category.objects.all()
-    return render(request, "categories.html", context={"categories": categories},)
+    return render(
+        request,
+        "categories.html",
+        context={"categories": categories},
+    )
 
 
 def display_shopping_list(request, category):
@@ -285,7 +289,11 @@ def create_category(request):
         form = CategoryForm()
 
     categories = Category.objects.all()
-    return render(request, "vendor/create_category.html", context={"form": form},)
+    return render(
+        request,
+        "vendor/create_category.html",
+        context={"form": form},
+    )
 
 
 def show_all_categories(request):
