@@ -16,6 +16,24 @@ def index(request):
     return render(request, "index.html")
 
 
+def get_session_order(request):
+    try:
+        return request.session["order"]
+    except KeyError:
+        request.session["order"] = list()
+        return request.session["order"]
+
+
+def add_session_order(request, order_id):
+    get_session_order(request)
+    request.session["order"].append(order_id)
+    request.session.modified = True
+
+
+def clear_session_order(request):
+    request.session["order"] = list()
+
+
 def get_session_cart(request):
     try:
         return request.session["cart"]
