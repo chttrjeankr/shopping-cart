@@ -3,6 +3,17 @@
 <div class="container">
   <h1>Order Bill</h1>
   <hr />
+  <!-- prettier-ignore -->
+  {% if pending_orders %}
+  {% for pending_order_id in pending_orders %}
+  <div class="alert alert-warning text-center" role="alert">
+    <a href="{% url 'payment_page' pending_order_id %}">
+      Pay for {{ pending_order_id }}
+    </a>
+  </div>
+  <!-- prettier-ignore -->
+  {% endfor %}
+  {% endif %}
   <div class="d-inline">
     <div class="alert alert-success" role="alert">
       Bill successfully generated! Note the Order ID.
