@@ -350,17 +350,28 @@ def razorpay_payment(request, order_id):
     order = Order.objects.get(order_id=order_id)
     if order.verify_razorpay_signature(params_dict):
         clear_session_cart(request)
+        clear_session_order(request)
         return JsonResponse({True: "Success"})
     else:
         return JsonResponse({False: "Failure", "ErrorCode": order.payment_error_code})
 
 
 def payment_page(request, order_id):
+    pending_orders = get_session_order(request)
+    print(pending_orders)
+    if len(pending_orders) > 1:
+        messages.info(request, "Order Payment/s Pending")
     order = Order.objects.get(order_id=order_id)
+    other_pending_orders = pending_orders.copy()
+    other_pending_orders.remove(order_id)
     return render(
         request,
         "display_bill.html",
-        context={"order": order, **shop_details},
+        context={
+            "order": order,
+            "pending_orders": other_pending_orders,
+            **shop_details,
+        },
     )
 
 
@@ -375,6 +386,7 @@ def create_order(request):
                 if error_while_saving:
                     messages.error(request, error_while_saving)
                     return redirect(reverse("create_order"))
+                add_session_order(request, order.order_id)
                 return redirect(
                     reverse("payment_page", kwargs={"order_id": order.order_id})
                 )
